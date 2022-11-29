@@ -5,26 +5,44 @@
 
 #include "mongoose.h"
 
+#ifndef MAX_BUFFER_LEN
+#define MAX_BUFFER_LEN 1024
+#endif
+
 static const char *s_http_port = "8000";
 
 static void restful_handler(struct mg_connection *nc, struct http_message *hm)
 {
-    if (mg_vcmp(&hm->uri, "/hi") == 0) {
-        /* Send headers */
-        mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
+    if(mg_vcmp(&hm->method, "GET") == 0)
+    {
+        if(mg_vcmp(&hm->uri, "/hi") == 0)
+        {
+            mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
+            mg_printf_http_chunk(nc, "{ \"result\": \"%s\" }", "hello world");
+            mg_send_http_chunk(nc, "", 0);
+        }
+    }
+    else if(mg_vcmp(&hm->method, "PUT") == 0)
+    {
+        char data[MAX_BUFFER_LEN] = {0};
+        if(mg_vcmp(&hm->uri, "/version") == 0)
+        {
+            snprintf(data, hm->body.len + 1, "%s", hm->body.p);
+            printf("version : %s\n", data);
+            mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
+            mg_printf_http_chunk(nc, "{ \"result\": %d }", 1);
+            mg_send_http_chunk(nc, "", 0);
+        }
 
-        /* Compute the result and send it back as a JSON object */
-        mg_printf_http_chunk(nc, "{ \"result\": \"%s\" }", "hello world");
-        mg_send_http_chunk(nc, "", 0); /* Send empty chunk, the end of response */
     }
 }
 
 static void ev_handler(struct mg_connection *nc, int ev, void *ev_data)
 {
     struct http_message *hm = (struct http_message *) ev_data;
-
     switch (ev) {
-    case MG_EV_HTTP_REQUEST: {
+    case MG_EV_HTTP_REQUEST:
+    {
         restful_handler(nc, hm);
         break;
     }
@@ -36,7 +54,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data)
 int main(void)
 {
   struct mg_mgr mgr;
-  struct mg_connection *nc;
+  struct mg_connection *nc = NULL;
 
   mg_mgr_init(&mgr, NULL);
 
