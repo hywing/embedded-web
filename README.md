@@ -2,10 +2,11 @@
 
 embedded webpage and webserver based on mongoose
 
-## restful server & client support
+## restful server & client example
+
+project
 
 * restful-server
   
 * restful-client
-
-
+    
