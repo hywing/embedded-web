@@ -9,6 +9,10 @@
 #define MAX_BUFFER_LEN 1024
 #endif
 
+#ifndef OK
+#define OK 1
+#endif
+
 static const char *s_http_port = "8000";
 static char s_version[MAX_BUFFER_LEN] = "V1.0.0.0";
 
@@ -31,7 +35,7 @@ static void restful_handler(struct mg_connection *nc, struct http_message *hm)
             snprintf(s_version, hm->body.len + 1, "%s", hm->body.p);
             printf("version : %s\n", s_version);
             mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-            mg_printf_http_chunk(nc, "{ \"result\": %d }", 1);
+            mg_printf_http_chunk(nc, "{ \"result\": %d }", OK);
             mg_send_http_chunk(nc, "", 0);
         }
 
