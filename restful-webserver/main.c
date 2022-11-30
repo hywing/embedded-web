@@ -54,20 +54,20 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data)
 
 int main(void)
 {
-  struct mg_mgr mgr;
-  struct mg_connection *nc = NULL;
+    struct mg_mgr mgr;
+    struct mg_connection *nc = NULL;
 
-  mg_mgr_init(&mgr, NULL);
+    mg_mgr_init(&mgr, NULL);
 
-  nc = mg_bind(&mgr, s_http_port, ev_handler);
-  mg_set_protocol_http_websocket(nc);
+    nc = mg_bind(&mgr, s_http_port, ev_handler);
+    mg_set_protocol_http_websocket(nc);
 
-  printf("Starting restful server on port %s \n", s_http_port);
+    printf("Starting restful server on port %s \n", s_http_port);
 
-  for (;;) {
-    mg_mgr_poll(&mgr, 1000);
-  }
-  mg_mgr_free(&mgr);
+    for (;;) {
+        mg_mgr_poll(&mgr, 1000);
+    }
+    mg_mgr_free(&mgr);
 
-  return 0;
+    return 0;
 }
