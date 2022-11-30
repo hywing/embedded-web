@@ -93,7 +93,8 @@ int main(void)
   // put request like this : "version : V3.1.4.0"
   send_put_request(nc, "version", "V3.1.4.0", "192.168.101.101", "8000");
 
-  send_get_request(nc, "hi", "192.168.101.101", "8000");
+  // get request like this : "/version"
+//  send_get_request(nc, "version", "192.168.101.101", "8000");
 
   printf("Starting RESTful client against %s\n", s_url);
   while (s_exit_flag == 0) {

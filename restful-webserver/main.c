@@ -10,25 +10,26 @@
 #endif
 
 static const char *s_http_port = "8000";
+static char s_version[MAX_BUFFER_LEN] = "V1.0.0.0";
 
 static void restful_handler(struct mg_connection *nc, struct http_message *hm)
 {
     if(mg_vcmp(&hm->method, "GET") == 0)
     {
-        if(mg_vcmp(&hm->uri, "/hi") == 0)
+        if(mg_vcmp(&hm->uri, "/version") == 0)
         {
             mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-            mg_printf_http_chunk(nc, "{ \"result\": \"%s\" }", "hello world");
+            mg_printf_http_chunk(nc, "{ \"version\": \"%s\" }", s_version);
             mg_send_http_chunk(nc, "", 0);
         }
     }
     else if(mg_vcmp(&hm->method, "PUT") == 0)
     {
-        char data[MAX_BUFFER_LEN] = {0};
+        memset(s_version, 0, sizeof(s_version));
         if(mg_vcmp(&hm->uri, "/version") == 0)
         {
-            snprintf(data, hm->body.len + 1, "%s", hm->body.p);
-            printf("version : %s\n", data);
+            snprintf(s_version, hm->body.len + 1, "%s", hm->body.p);
+            printf("version : %s\n", s_version);
             mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
             mg_printf_http_chunk(nc, "{ \"result\": %d }", 1);
             mg_send_http_chunk(nc, "", 0);
