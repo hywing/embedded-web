@@ -41,7 +41,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data)
     }
 }
 
-static void send_get_request(struct mg_connection *nc, const char *file_name, const char *host, const char *bucket)
+static void send_get_request(struct mg_connection *nc, const char *name, const char *host, const char *bucket)
 {
     const char *method = "GET";
     char date[100], req[1000];
@@ -55,11 +55,11 @@ static void send_get_request(struct mg_connection *nc, const char *file_name, co
              "Host: %s.%s\r\n"
              "Date: %s\r\n"
              "\r\n",
-             method, file_name, bucket, host, date);
+             method, name, bucket, host, date);
     mg_printf(nc, "%s", req);
 }
 
-static void send_put_request(struct mg_connection *nc, const char *file_name, const char *file_data, const char *host, const char *bucket)
+static void send_put_request(struct mg_connection *nc, const char *name, const char *file_data, const char *host, const char *bucket)
 {
     const char *content_type = "text/plain", *method = "PUT";
     char date[100], req[1000];
@@ -75,7 +75,7 @@ static void send_put_request(struct mg_connection *nc, const char *file_name, co
              "Content-Type: %s\r\n"
              "Content-Length: %lu\r\n"
              "\r\n",
-             method, file_name, bucket, host, date, content_type,
+             method, name, bucket, host, date, content_type,
              (unsigned long)strlen(file_data));
     mg_printf(nc, "%s%s", req, file_data);
 }
