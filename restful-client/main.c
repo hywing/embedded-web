@@ -104,6 +104,14 @@ int main(void)
         mg_mgr_poll(&mgr, 1000);
     }
 
+    // put request like this : "count : 100"
+    send_put_request(nc, "count", "100", "192.168.101.101", "8000");
+
+    printf("Starting RESTful client against %s\n", s_url);
+    while (s_exit_flag == 0) {
+        mg_mgr_poll(&mgr, 1000);
+    }
+
 
     mg_mgr_free(&mgr);
 

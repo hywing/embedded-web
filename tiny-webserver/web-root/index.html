@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tiny Webserver</title>
+</head>
+<body>
+<div>
+    <form>
+        user : <input type="text" id="user">  <button id="user_commit">commit</button>
+    </form>
+    <form>
+        number : <input type="text" id="number">  <button id="number_commit">commit</button>
+    </form>
+    <form>
+        sex : <select type="text" id="sex">  <option value=0>man</option> <option value=0>woman</option></option> </select> <button id="sex_commit">commit</button>
+    </form>
+</div>
+<script>
+    var url = "ws://" + window.location.host + "/ws";
+    var ws = new WebSocket(url);
+    ws.onopen = function() {
+        console.log("websocket connected.");
+    }
+    ws.onclose = function() {
+        console.log("websocket disconnected.");
+    }
+    ws.onmessage = function(evt) {
+        var json = JSON.parse(evt.data);
+        if(json["result"] == 1) {
+            alert(json["item"] +  " download : ok");
+        }
+        else {
+            alert(json["item"] +  " download : error");
+        }
+        console.log(json);
+    }
+    var user_commit = document.getElementById("user_commit");
+    user_commit.onclick = function() {
+        var user = document.getElementById("user");
+        var json = {};
+        json["user"] = user.value;
+        ws.send(JSON.stringify(json));
+        console.log("user : " + user.value);
+    }
+    var number_commit = document.getElementById("number_commit");
+    number_commit.onclick = function() {
+        var user = document.getElementById("number");
+        var json = {};
+        json["number"] = user.value;
+        ws.send(JSON.stringify(json));
+        console.log("number : " + user.value);
+    }
+    var sex_commit = document.getElementById("sex_commit");
+    sex_commit.onclick = function() {
+        var user = document.getElementById("sex");
+        var json = {};
+        json["sex"] = user.value;
+        ws.send(JSON.stringify(json));
+        console.log("sex : " + user.value);
+    }
+</script>
+</body>
+</html>
