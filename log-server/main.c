@@ -19,6 +19,7 @@
 static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
 static struct mg_mgr s_mgr;
+static struct mg_connection *s_newest = NULL;
 
 static void send_log_data(struct mg_connection *nc, const char *str)
 {
@@ -31,6 +32,12 @@ static void web_handler(struct mg_connection *nc, int ev, void *p)
 {
     switch (ev)
     {
+    case MG_EV_WEBSOCKET_HANDSHAKE_DONE:
+    {
+        s_newest = nc;
+        printf("new connection %p join++\n", nc);
+        break;
+    }
     case MG_EV_HTTP_REQUEST:
     {
         mg_serve_http(nc, (struct http_message *) p, s_http_server_opts);
@@ -39,13 +46,18 @@ static void web_handler(struct mg_connection *nc, int ev, void *p)
     case MG_EV_TIMER:
     {
         mg_set_timer(nc, mg_time() + INTERVAL);
-        for(struct mg_connection *c = s_mgr.active_connections; c != NULL; c = c->next)
+        if(s_newest)
         {
             srand(time(NULL));
             char str[MAX_BUFFER_LEN] = {0};
             sprintf(str, "%d", rand() % 10000);
-            send_log_data(c, str);
+            send_log_data(s_newest, str);
         }
+        break;
+    }
+    case MG_EV_CLOSE:
+    {
+        printf("new connection %p left--\n", nc);
         break;
     }
     default:
