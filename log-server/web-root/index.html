@@ -1,0 +1,72 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Log</title>
+
+<style type="text/css">
+#scrollMsg{500px;height:600px;background-color:#feeff7;overflow:scroll; overflow-x:hidden;text-overflow:ellipsis;word-break:break-all;}
+
+#scrollMsg span{margin:6px;display:block;}
+
+#scrollMsg span a{color:#f60;text-decoration:underline;margin:0 4px;}
+
+#scrollMsg span a:hover{color:#f20;}
+
+#scrollMsg span label{color:#c70060;margin:0 4px;}
+</style>
+
+<script type="text/javascript">
+
+function getEid(id){
+
+    return document.getElementById(id);
+
+}
+
+
+function newNode(param){
+
+    return document.createElement(param);
+
+}
+
+function newTextNode(param){
+
+    return document.createTextNode(param);
+
+}
+
+var url = "ws://" + window.location.host + "/ws";
+var ws = new WebSocket(url);
+ws.onopen = function() {
+    console.log("websocket connected.");
+}
+ws.onclose = function() {
+    console.log("websocket disconnected.");
+}
+ws.onmessage = function(evt) {
+    var json = JSON.parse(evt.data);
+    if("log" in json)  {
+        var dest = getEid("scrollMsg");                 
+        var newStr = newTextNode(new Date().toLocaleString() + " : " + json["log"]);       
+        var span = newNode("span");                            
+        span.appendChild(newStr);                      
+        dest.appendChild(span);     
+        console.log(json["log"]);
+    }
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div id="scrollMsg"></div>
+
+</body>
+
+</html>
