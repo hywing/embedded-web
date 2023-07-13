@@ -4,7 +4,7 @@
 
 Connector::Connector(QObject *parent) : QObject(parent),
     m_socket(new QWebSocket()),
-    m_url("ws://10.1.25.163:8000"),
+    m_url("ws://127.0.0.1:8000"),
     m_reconnectTimer(new QTimer(this))
 {
     connect(m_socket, &QWebSocket::connected, this, &Connector::onSocketConnected);
