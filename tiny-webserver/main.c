@@ -18,7 +18,7 @@ static struct mg_serve_http_opts s_http_server_opts;
 static void on_data_come(struct mg_connection *nc, struct websocket_message *wm)
 {
     char data[1024] = {0};
-    snprintf(data, wm->size + 1, "%s", wm->data);
+    snprintf(data, wm->size, "%s", wm->data);
 
     cJSON *json = cJSON_Parse(data);
     cJSON *item = NULL;
@@ -34,12 +34,22 @@ static void on_data_come(struct mg_connection *nc, struct websocket_message *wm)
     {
         sprintf(data, "{\"item\":\"sex\",\"result\":%d}", !strlen(item->valuestring) ? ERR : OK);
     }
+    else if((item = cJSON_GetObjectItem(json, "msg")) && !strcmp("Calibration", item->valuestring))
+    {
+        item = cJSON_GetObjectItem(json, "Peak_Power");
+        printf("data : %d\n", item->valueint);
+        sprintf(data, "{\"msg\":\"%s\",\"res\":%d}", item->string, 1);
+    }
     mg_send_websocket_frame(nc, WEBSOCKET_OP_TEXT, data, strlen(data));
 }
 
 static void ev_handler(struct mg_connection *nc, int ev, void *p)
 {
-    if (ev == MG_EV_HTTP_REQUEST)
+    if (ev == MG_EV_WEBSOCKET_HANDSHAKE_DONE)
+    {
+        printf("new connection %d joined\n", nc->sock);
+    }
+    else if (ev == MG_EV_HTTP_REQUEST)
     {
         mg_serve_http(nc, (struct http_message *) p, s_http_server_opts);
     }
@@ -47,6 +57,10 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p)
     {
 
         on_data_come(nc, (struct websocket_message *)p);
+    }
+    else if(ev == MG_EV_CLOSE)
+    {
+        printf("fd : %d is closed ...\n", nc->sock);
     }
 }
 
@@ -64,7 +78,7 @@ int main(void)
     }
 
     mg_set_protocol_http_websocket(nc);
-    s_http_server_opts.document_root = "/mnt/hgfs/workspace/embedded-web/tiny-webserver/web-root";
+    s_http_server_opts.document_root = "E:/workspace/embedded-web/tiny-webserver/web-root";
     s_http_server_opts.enable_directory_listing = "yes";
 
     for (;;) {
