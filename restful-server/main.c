@@ -31,7 +31,7 @@ static cJSON *read_json(const char *path)
     char *content = (char *)malloc(size * sizeof(char));
     memset(content, 0, size);
     fseek(fp, 0, SEEK_SET);
-    fread(content, size, size, fp);
+    fread(content, 1, size, fp);
     fclose(fp);
     cJSON *json = cJSON_Parse(content);
     free(content);
@@ -62,6 +62,7 @@ static void restful_handler(struct mg_connection *nc, struct http_message *hm)
         {
             mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
             cJSON *item = cJSON_GetObjectItem(s_json, "version");
+            printf("json : %s\n", cJSON_Print(item));
             mg_printf_http_chunk(nc, "{ \"version\": \"%s\" }", item->valuestring);
             mg_send_http_chunk(nc, "", 0);
         }
