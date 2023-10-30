@@ -12,8 +12,8 @@
 
 #include "mongoose.h"
 
-static const char *s_url = "mqtt://192.168.56.134:1883";
-static const char *s_sub_topic = "hello";     // Publish topic
+static const char *s_url = "mqtt://47.243.6.70:1883";
+static const char *s_sub_topic = "/rasp";     // Publish topic
 static const char *s_pub_topic = "mg/clnt/test";  // Subscribe topic
 static int s_qos = 1;                             // MQTT QoS
 static struct mg_connection *s_conn;              // Client connection
