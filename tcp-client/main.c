@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 {
     struct mg_mgr mgr;
     mg_mgr_init(&mgr);                                                              // Init manager
-    mg_connect(&mgr, "tcp://localhost:1234", cb, &mgr);                             // Connect host
+    mg_connect(&mgr, "tcp://47.243.6.70:12345", cb, &mgr);                          // Connect host
     mg_timer_add(&mgr, 1000, MG_TIMER_REPEAT | MG_TIMER_RUN_NOW, timer_fn, &mgr);   // Setup timer
     for (;;) mg_mgr_poll(&mgr, 1000);                                               // Event loop
     mg_mgr_free(&mgr);                                                              // Cleanup
