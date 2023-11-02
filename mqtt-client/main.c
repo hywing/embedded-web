@@ -1,22 +1,10 @@
-// Copyright (c) 2023 Cesanta Software Limited
-// All rights reserved
-//
-// Example MQTT client. It performs the following steps:
-//    1. Connects to the MQTT server specified by `s_url` variable
-//    2. When connected, subscribes to the topic `s_sub_topic`
-//    3. Publishes message `hello` to the `s_pub_topic`
-//    4. Receives that message back from the subscribed topic and closes
-//    5. Timer-based reconnection logic revives the connection when it is down
-//
-// To enable SSL/TLS, see https://mongoose.ws/tutorials/tls/#how-to-build
-
 #include "mongoose.h"
 
-static const char *s_url = "mqtt://47.243.6.70:1883";
-static const char *s_sub_topic = "/rasp";     // Publish topic
-static const char *s_pub_topic = "mg/clnt/test";  // Subscribe topic
-static int s_qos = 1;                             // MQTT QoS
-static struct mg_connection *s_conn;              // Client connection
+static const char *s_url = "mqtt://47.243.6.70:1883";   // MQTT URL
+static const char *s_sub_topic = "/rasp";               // Publish topic
+static const char *s_pub_topic = "mg/clnt/test";        // Subscribe topic
+static int s_qos = 1;                                   // MQTT QoS
+static struct mg_connection *s_conn;                    // Client connection
 
 // Handle interrupts, like Ctrl-C
 static int s_signo;
