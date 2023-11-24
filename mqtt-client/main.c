@@ -1,6 +1,6 @@
 #include "mongoose.h"
 
-static const char *s_url = "mqtt://47.243.6.70:1883";   // MQTT URL
+static const char *s_url = "mqtt://192.168.245.251:1883";   // MQTT URL
 static const char *s_sub_topic = "/rasp";               // Publish topic
 static const char *s_pub_topic = "mg/clnt/test";        // Subscribe topic
 static int s_qos = 1;                                   // MQTT QoS
@@ -59,6 +59,16 @@ static void timer_fn(void *arg) {
                 .version = 4,
                 .message = mg_str("bye")};
     if (s_conn == NULL) s_conn = mg_mqtt_connect(mgr, s_url, &opts, fn, NULL);
+//    else
+//    {
+//        struct mg_str pubt = mg_str(s_pub_topic), data = mg_str("hello");
+//        struct mg_mqtt_opts pub_opts;
+//        memset(&pub_opts, 0, sizeof(pub_opts));
+//        pub_opts.topic = pubt;
+//        pub_opts.message = data;
+//        pub_opts.qos = 1;
+//        mg_mqtt_pub(s_conn, &pub_opts);
+//    }
 }
 
 int main(int argc, char *argv[]) {
