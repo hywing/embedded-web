@@ -1,10 +1,10 @@
 #include "mongoose.h"
 
-static const char *s_url = "mqtt://192.168.245.251:1883";   // MQTT URL
-static const char *s_sub_topic = "/rasp";               // Publish topic
-static const char *s_pub_topic = "mg/clnt/test";        // Subscribe topic
-static int s_qos = 1;                                   // MQTT QoS
-static struct mg_connection *s_conn;                    // Client connection
+static const char *s_url = "mqtt://119.23.145.144:1883";   // MQTT URL
+static const char *s_sub_topic = "/iotstuff";               // Publish topic
+static const char *s_pub_topic = "mg/clnt/test";           // Subscribe topic
+static int s_qos = 1;                                      // MQTT QoS
+static struct mg_connection *s_conn;                       // Client connection
 
 // Handle interrupts, like Ctrl-C
 static int s_signo;
